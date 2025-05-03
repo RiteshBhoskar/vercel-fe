@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import axios from "axios"
 
-const BACKEND_UPLOAD_URL = "http://vercel.riteshbhoskar.com";
+const BACKEND_UPLOAD_URL = "https://vercel.riteshbhoskar.com";
 
 export function LandingPage() {
   const [repoUrl, setRepoUrl] = useState("");
@@ -103,11 +103,11 @@ export function LandingPage() {
         <CardContent>
           <div className="space-y-2">
             <Label htmlFor="deployed-url">Deployed URL</Label>
-            <Input id="deployed-url" readOnly type="url" value={`http://${uploadId}.vercel.riteshbhoskar.com/`} />
+            <Input id="deployed-url" readOnly type="url" value={`https://${uploadId}.vercel.riteshbhoskar.com/`} />
           </div>
           <br />
           <Button className="w-full" variant="outline">
-            <a href={`http://${uploadId}.vercel.riteshbhoskar.com/`} target="_blank">
+            <a href={`https://${uploadId}.vercel.riteshbhoskar.com/`} target="_blank">
               Visit Website
             </a>
           </Button>
