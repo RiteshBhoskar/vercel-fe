@@ -3,10 +3,14 @@ import { CardTitle, CardDescription, CardHeader, CardContent, Card } from "@/com
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios"
+import Header from "./Header"
+import { RocketIcon } from "lucide-react"
+import { CopyButton } from "./ui/shadcn-io/copy-button"
+import { Vortex } from "./ui/shadcn-io/vortex"
 
-const BACKEND_UPLOAD_URL = "https://vercel.riteshbhoskar.com";
+const BACKEND_UPLOAD_URL = "http://vercel.riteshbhoskar.com";
 
 export function LandingPage() {
   const [repoUrl, setRepoUrl] = useState("");
@@ -14,7 +18,14 @@ export function LandingPage() {
   const [uploading, setUploading] = useState(false);
   const [deployed, setDeployed] = useState(false);
   const [status, setStatus] = useState("");
+  const [deployedUrl, setDeployedUrl] = useState("");
 
+  useEffect(() => {
+    if (uploadId) {
+      const url = `https://${uploadId}.vercel.riteshbhoskar.com/`
+      setDeployedUrl(url);
+    }
+  }, [uploadId]);
 
 
   const handleDeployAnother = () => {
@@ -33,29 +44,40 @@ export function LandingPage() {
     } else if (uploadId && status === "Deployment Failed") {
       return "Deploy Again";
     }
-    return "Upload";
+    return "Deploy";
   };
 
-
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-300 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-xl">Deploy your GitHub Repository</CardTitle>
-          <CardDescription>Enter the URL of your GitHub repository to deploy it</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="github-url">GitHub Repository URL</Label>
-              <Input 
-                value={repoUrl || ""}
-                onChange={(e) => {
-                  setRepoUrl(e.target.value);
-                }}
-                placeholder="https://github.com/username/repo" 
-              />
+    <div className="h-screen w-full  flex-col  items-center">
+      <Vortex
+        backgroundColor="black"
+        particleCount={300}
+        rangeY={200}
+        baseHue={100}
+        baseSpeed={0.0}
+        rangeSpeed={1}
+        className="absolute inset-0 z-0 h-full w-full"
+        >
+      <Header />
+      <div className="flex flex-col items-center mt-7 w-full justify-center px-4 sm:px-20 ">
+        <Card className="border-border bg-card w-full h-full my-8 py-10">
+          <div className="sm:mx-auto mx-2 max-w-2xl">
+            <div className="mb-6 text-center">
+              <h2 className="mb-2 text-2xl font-semibold text-foreground">Deploy from GitHub</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Enter your React GitHub repository URL to create a new deployment
+              </p>
             </div>
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <Input
+                  type="text"
+                  placeholder="https://github.com/username/repository"
+                  value={repoUrl}
+                  onChange={(e) => setRepoUrl(e.target.value)}
+                  className="h-12 bg-background"
+                />
+              </div>
             <Button onClick={async () => {
               setUploading(true);
               const res = await axios.post(`${BACKEND_UPLOAD_URL}/deploy`, {
@@ -80,14 +102,17 @@ export function LandingPage() {
                 }
 
               }, 3000)
-            }} disabled={uploadId !== "" || uploading} className="w-full" type="submit">
+            }} disabled={ uploadId !== "" || uploading}                 className="h-12 px-8 bg-primary text-primary-foreground hover:bg-primary/90" type="submit">
+              <RocketIcon className="mr-2 h-4 w-4" />
               {getButtonText()}
             </Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-            {uploadId && !deployed && (
-        <Card className="w-full max-w-md mt-8">
+        </Card>
+
+            {uploadId && !deployed && 
+            (
+        <Card className="w-full flex flex-col items-center justify-center px-2 mt-8">
           <CardHeader>
             <CardTitle className="text-xl">Deployment Status</CardTitle>
             <CardDescription>{status}</CardDescription>
@@ -95,25 +120,29 @@ export function LandingPage() {
         </Card>
       )}
 
-      {deployed && <Card className="w-full max-w-md mt-8">
-        <CardHeader>
-          <CardTitle className="text-xl">Deployment Status</CardTitle>
+      {deployed && 
+      <Card className="max-w-lg w-full py-10 my-8 items-center flex flex-col text-center justify-center">
+        <CardHeader className="w-full">
+          <CardTitle className="text-2xl">Deployment Successful</CardTitle>
           <CardDescription>Your website is successfully deployed!</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="w-full">
           <div className="space-y-2">
             <Label htmlFor="deployed-url">Deployed URL</Label>
-            <Input id="deployed-url" readOnly type="url" value={`https://${uploadId}.vercel.riteshbhoskar.com/`} />
+            <div className="flex gap-2">
+              <Input id="deployed-url" readOnly type="url" value={deployedUrl} />
+              <CopyButton content={deployedUrl} />
+            </div>
           </div>
           <br />
           <Button className="w-full" variant="outline">
-            <a href={`https://${uploadId}.vercel.riteshbhoskar.com/`} target="_blank">
+            <a href={`https://${uploadId}.vercel.riteshbhoskar.com/`} className="w-full h-10 flex items-center justify-center" target="_blank">
               Visit Website
             </a>
           </Button>
           <br />
             <Button
-              className="w-full mt-4"
+              className="w-full mt-4 h-10 text-sm"
               onClick={handleDeployAnother}
               variant="outline"
             >
@@ -139,6 +168,8 @@ export function LandingPage() {
           </CardContent>
         </Card>
       )}
-    </main>
+      </div>
+      </Vortex>
+    </div>
   )
 }
