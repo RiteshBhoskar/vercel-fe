@@ -10,7 +10,7 @@ import { RocketIcon } from "lucide-react"
 import { CopyButton } from "./ui/shadcn-io/copy-button"
 import { Vortex } from "./ui/shadcn-io/vortex"
 
-const BACKEND_UPLOAD_URL = "http://vercel.riteshbhoskar.com";
+const BACKEND_UPLOAD_URL = "https://vercel.riteshbhoskar.com";
 
 export function LandingPage() {
   const [repoUrl, setRepoUrl] = useState("");
