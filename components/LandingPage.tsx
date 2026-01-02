@@ -53,7 +53,7 @@ export function LandingPage() {
         backgroundColor="black"
         particleCount={300}
         rangeY={200}
-        baseHue={100}
+        baseHue={400}
         baseSpeed={0.0}
         rangeSpeed={1}
         className="absolute inset-0 z-0 h-full w-full"
